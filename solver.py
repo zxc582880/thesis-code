@@ -343,136 +343,7 @@ class Solver(object):
             # =================================================================================== #
             #                               3. Train the generator                                #
             # =================================================================================== #
-            
-            # import torch.nn.functional as F
-
-            # if (i+1) % self.n_critic == 0:
-            #     # Original-to-target domain.
-            #     x_fake = self.G(x_real, c_trg)
-            #     out_src, out_cls = self.D(x_fake)
-            #     g_loss_fake = - torch.mean(out_src)
-            #     g_loss_cls = self.classification_loss(out_cls, label_trg, self.dataset)
-
-            #     # Target-to-original domain.
-            #     x_reconst = self.G(x_fake, c_org)
-
-            #     # Calculate KL divergence as outlier_penalty
-            #     x_reconst_probs = F.softmax(x_reconst, dim=1)
-            #     x_real_probs = F.softmax(x_real, dim=1)
-            #     outlier_penalty = F.kl_div(x_reconst_probs.log(), x_real_probs, reduction='batchmean')
-
-            #     # Calculate L1 Loss as g_loss_rec
-            #     g_loss_rec = torch.mean(torch.abs(x_real - x_reconst))
-
-            #     # Backward and optimize.
-            #     g_loss = g_loss_fake + self.lambda_rec * g_loss_rec + self.lambda_cls * g_loss_cls + outlier_penalty
-            #     self.reset_grad()
-            #     g_loss.backward()
-            #     self.g_optimizer.step()
-
-            #     # Logging.
-            #     loss['G/loss_fake'] = g_loss_fake.item()
-            #     loss['G/loss_rec'] = g_loss_rec.item()
-            #     loss['G/loss_cls'] = g_loss_cls.item()
-            #     loss['G/outlier_penalty'] = outlier_penalty.item()  # add the outlier penalty to the loss dictionary for logging
-            #     G_loss_fake_list.append(loss['G/loss_fake'])
-            #     G_loss_rec_list.append(loss['G/loss_rec'])
-            #     G_loss_cls_list.append(loss['G/loss_cls'])
-
-            # if (i+1) % self.n_critic == 0:
-            #     # Original-to-target domain.
-            #     x_fake = self.G(x_real, c_trg)
-            #     out_src, out_cls = self.D(x_fake)
-            #     g_loss_fake = - torch.mean(out_src)
-            #     g_loss_cls = self.classification_loss(out_cls, label_trg, self.dataset)
-
-            #     # Target-to-original domain.
-            #     x_reconst = self.G(x_fake, c_org)
-            #     g_loss_rec = torch.mean(torch.abs(x_real - x_reconst))
-
-            #     # Calculate L2 Loss as outlier_penalty
-            #     outlier_penalty = torch.mean((x_fake - x_real)**2)
-
-            #     # Backward and optimize.
-            #     g_loss = g_loss_fake + self.lambda_rec * g_loss_rec + self.lambda_cls * g_loss_cls + outlier_penalty
-            #     self.reset_grad()
-            #     g_loss.backward()
-            #     self.g_optimizer.step()
-
-            #     # Logging.
-            #     loss['G/loss_fake'] = g_loss_fake.item()
-            #     loss['G/loss_rec'] = g_loss_rec.item()
-            #     loss['G/loss_cls'] = g_loss_cls.item()
-            #     loss['G/outlier_penalty'] = outlier_penalty.item() # add the outlier penalty to the loss dictionary for logging
-            #     G_loss_fake_list.append(loss['G/loss_fake'])
-            #     G_loss_rec_list.append(loss['G/loss_rec'])
-            #     G_loss_cls_list.append(loss['G/loss_cls'])
-
-            # from pytorch_msssim import ssim as ssim_torch
-
-            # if (i+1) % self.n_critic == 0:
-            #     # Original-to-target domain.
-            #     x_fake = self.G(x_real, c_trg)
-            #     out_src, out_cls = self.D(x_fake)
-            #     g_loss_fake = - torch.mean(out_src)
-            #     g_loss_cls = self.classification_loss(out_cls, label_trg, self.dataset)
-
-            #     # Target-to-original domain.
-            #     x_reconst = self.G(x_fake, c_org)
-
-            #     # Calculate SSIM as outlier_penalty
-            #     outlier_penalty = 1.0 - ssim_torch(x_reconst, x_real, data_range=1.0, win_size=11, size_average=True)
-
-            #     # Calculate L1 Loss as g_loss_rec
-            #     g_loss_rec = torch.mean(torch.abs(x_real - x_reconst))
-
-            #     # Backward and optimize.
-            #     g_loss = g_loss_fake + self.lambda_rec * g_loss_rec + self.lambda_cls * g_loss_cls + outlier_penalty
-            #     self.reset_grad()
-            #     g_loss.backward()
-            #     self.g_optimizer.step()
-
-            #     # Logging.
-            #     loss['G/loss_fake'] = g_loss_fake.item()
-            #     loss['G/loss_rec'] = g_loss_rec.item()
-            #     loss['G/loss_cls'] = g_loss_cls.item()
-            #     loss['G/outlier_penalty'] = outlier_penalty.item()  # add the outlier penalty to the loss dictionary for logging
-            #     G_loss_fake_list.append(loss['G/loss_fake'])
-            #     G_loss_rec_list.append(loss['G/loss_rec'])
-            #     G_loss_cls_list.append(loss['G/loss_cls'])
-
-            # if (i+1) % self.n_critic == 0:
-            #     # Original-to-target domain.
-            #     x_fake = self.G(x_real, c_trg, outlier_penalty=self.outlier_penalty)
-            #     out_src, out_cls = self.D(x_fake)
-            #     g_loss_fake = - torch.mean(out_src)
-            #     g_loss_cls = self.classification_loss(out_cls, label_trg, self.dataset)
-
-            #     # Target-to-original domain.
-            #     x_reconst = self.G(x_fake, c_org)
-            #     g_loss_rec = torch.mean(torch.abs(x_real - x_reconst))
-
-            #     # Calculate outlier_penalty
-            #     outlier_penalty = torch.mean(torch.sqrt(torch.sum(torch.pow(x_fake - x_real, 2), dim=(1,2,3)))) / 10.0
-
-
-            #     # Backward and optimize.
-            #     g_loss = g_loss_fake + self.lambda_rec * g_loss_rec + self.lambda_cls * g_loss_cls + outlier_penalty
-            #     self.reset_grad()
-            #     g_loss.backward()
-            #     self.g_optimizer.step()
-
-            #     # Logging.
-            #     loss['G/loss_fake'] = g_loss_fake.item()
-            #     loss['G/loss_rec'] = g_loss_rec.item()
-            #     loss['G/loss_cls'] = g_loss_cls.item()
-            #     loss['G/outlier_penalty'] = outlier_penalty.item() # add the outlier penalty to the loss dictionary for logging
-            #     G_loss_fake_list.append(loss['G/loss_fake'])
-            #     G_loss_rec_list.append(loss['G/loss_rec'])
-            #     G_loss_cls_list.append(loss['G/loss_cls'])
-            
-
-
+           
             if (i+1) % self.n_critic == 0:
                 # Original-to-target domain.
                 x_fake = self.G(x_real, c_trg)
@@ -519,12 +390,6 @@ class Solver(object):
                 for tag, value in loss.items():
                     log += ",{}: {:.4f}".format(tag, value)
 
-                # Print Gram matrices if using attention blocks
-                # if self.use_attention:
-                #     log += "\nGenerator Gram Matrices:"
-                #     for j, gram_matrices in enumerate(G_gram_matrices):
-                #         for k, attention_matrix in enumerate(gram_matrices):
-                #             log += "\nAttention Block {} - Gram Matrix {}: \n{}".format(j, k, attention_matrix)
 
                 print(log)
 
@@ -587,39 +452,6 @@ class Solver(object):
                     for value in G_loss_rec_list:
                         file.write(f'{value}\n')
                 
-                # print(f'已將 G_loss_rec_list 的所有值保存到 {file_path} 檔案中...')
-                # plt.plot(D_loss_list, label='D/loss')
-                # plt.plot(D_loss_fake_list, label='D/loss_fake')
-                # plt.plot(D_loss_cls_list, label='D/loss_cls')
-                # plt.plot(D_loss_gp_list, label='D/loss_gp')
-                # plt.figure()
-                # plt.plot(G_loss_fake_list, label='G/loss_fake')
-                # plt.legend()
-                # plt.xlabel('Iteration')
-                # plt.ylabel('Loss')
-                # plt.savefig(self.result_dir +'\\fake.png')
-                
-                # plt.figure()
-                # plt.plot(G_loss_rec_list, label='G/loss_rec')
-                # plt.legend()
-                # plt.xlabel('Iteration')
-                # plt.ylabel('Loss')
-                # plt.savefig(self.result_dir +'\\rec.png')
-
-                # plt.figure()
-                # plt.plot(G_loss_cls_list, label='G/loss_cls')
-                # plt.legend()
-                # plt.xlabel('Iteration')
-                # plt.ylabel('Loss')
-                # plt.savefig(self.result_dir +'\\cls.png')
-
-                # plt.figure()
-                # plt.plot(extra_G_loss_rec_list, label='G/loss_rec(every 5000 epochs)')
-                # plt.legend()
-                # plt.xlabel('Iteration(every 5000 epochs)')
-                # plt.ylabel('Loss')
-                # plt.savefig(self.result_dir + '\\lossper5000.png')
-                # Calculate the average of losses
                 avg_D_loss = np.mean(D_loss_list)
                 avg_D_loss_fake = np.mean(D_loss_fake_list)
                 avg_D_loss_cls = np.mean(D_loss_cls_list)
@@ -660,23 +492,6 @@ class Solver(object):
                     file.write('avg_loss:'+f'{avg_G_loss_rec}\n')
                     file.write('var_loss'+f'{var_G_loss_rec}\n')
 
-                #########################################################################################
-                # if self.use_attention:
-                #     avg_gram_matrices = []
-                #     for j, gram_matrices in enumerate(G_gram_matrices):
-                #         avg_block_gram = torch.mean(torch.stack(gram_matrices), dim=0)
-                #         avg_gram_matrices.append(avg_block_gram)
-                #         print(f"Average Gram Matrix for Attention Block {j}:\n{avg_block_gram}")
-                #     for j, avg_block_gram in enumerate(avg_gram_matrices):
-                #         plt.imshow(avg_block_gram, cmap='hot', interpolation='nearest')
-                #         plt.title(f'Average Gram Matrix for Attention Block {j}')
-                #         plt.show()
-                ##########################################################################################這裡有改
-                # plt.plot(outlier_penalty, label='Outlier_penalty')
-                # plt.legend()
-                # plt.xlabel('Iteration')
-                # plt.ylabel('Penalty')
-                # plt.show()
            
     
     def test(self):
